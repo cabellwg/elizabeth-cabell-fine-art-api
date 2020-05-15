@@ -9,6 +9,7 @@ FROM base as build
 RUN apk update && apk add --no-cache \
         bash \
         make \
+        git \
         linux-headers \
         musl-dev \
         gcc \
