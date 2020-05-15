@@ -1,6 +1,0 @@
-Flask==1.1.2
-uwsgi==2.0.18
-flask_cors==3.0.7
-requests==2.23.0
-coverage==5.1
-coveralls==2.0.0

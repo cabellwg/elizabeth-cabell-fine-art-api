@@ -2,7 +2,10 @@
 
 import sys
 import logging
-logging.basicConfig(stream=sys.stderr)
 
 from flask_app import create_app
+
+
+logging.basicConfig(stream=sys.stderr)
+
 application = create_app()

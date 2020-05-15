@@ -3,7 +3,7 @@ language: python
 python:
   - "3.8"
 
-install: make init
+install: make init env=test
 script: make test
 after_success:
   - . ./p3_8env/bin/activate

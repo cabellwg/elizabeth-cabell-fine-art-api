@@ -1,5 +1,7 @@
 p3_*env
-idea
+.idea
 .travis.yml
 .gitignore
 .git
+requirements.dev.txt
+requirements.test.txt

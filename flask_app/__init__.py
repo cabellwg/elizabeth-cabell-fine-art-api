@@ -1,26 +1,43 @@
-from flask import Flask
+import os
 
-from flask_app.routes import apply_routes
+from flask import Flask, g
+from flask_jwt_extended import JWTManager
 
 
-def create_app(test_config=None):
+def create_app(test_env=None):
     """Builds the Flask app.
 
-    :param test_config: An optional test configuration for testing.
     :return: The application.
     """
     app = Flask(__name__)
+    env = test_env if test_env is not None else os.environ["ENV"]
 
-    if test_config is None:
-        app.config.from_pyfile("config.py", silent=True)
+    if env == "prod":
+        app.config.from_object("config.ProdConfig")
+    elif env == "test":
+        app.config.from_object("config.TestConfig")
     else:
-        app.config.from_mapping(test_config)
+        app.config.from_object("config.DevConfig")
 
-    apply_routes(app)
+    if app.secret_key is None or app.config["JWT_SECRET_KEY"] is None:
+        raise ValueError("Could not get application secret keys")
+
+    JWTManager(app)
+
+    @app.route("/healthcheck", methods=["GET"])
+    def healthcheck():
+        """Route for the healthcheck."""
+        return b"", 200
+
+    from . import db
+    db.init_app(app)
+
+    from . import auth
+    app.register_blueprint(auth.build_bp(app))
 
     return app
 
 
 if __name__ == "__main__":
-    application = create_app()
+    application = create_app(test_env="dev")
     application.run()
