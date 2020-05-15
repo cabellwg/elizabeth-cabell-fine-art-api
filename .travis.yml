@@ -1,10 +1,10 @@
-dist: xenial  # For Python 3.7
+dist: xenial
 language: python
 python:
-  - "3.7"
+  - "3.8"
 
 install: make init
 script: make test
 after_success:
-  - . ./p3_7env/bin/activate
+  - . ./p3_8env/bin/activate
   - coveralls

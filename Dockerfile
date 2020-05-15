@@ -1,5 +1,5 @@
 # Base image
-FROM python:3.7-alpine as python
+FROM python:3.8-alpine as python
 LABEL maintainer=william16180@gmail.com
 
 
@@ -42,6 +42,6 @@ COPY . /app
 WORKDIR /app
 
 HEALTHCHECK --timeout=5s --start-period=10s \
-  CMD ["/app/p3_7env/bin/python", "/app/healthcheck.py"]
+  CMD ["/app/p3_8env/bin/python", "/app/healthcheck.py"]
 
-ENTRYPOINT ["/app/p3_7env/bin/uwsgi", "--ini", "/app/uwsgi/ecfaapi.ini"]
+ENTRYPOINT ["/app/p3_8env/bin/uwsgi", "--ini", "/app/uwsgi/ecfaapi.ini"]
