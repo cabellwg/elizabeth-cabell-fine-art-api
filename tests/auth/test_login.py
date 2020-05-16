@@ -60,9 +60,7 @@ class TestLogin(unittest.TestCase):
 
         r = self.client.post("/auth/login", json=test_data)
         self.assertEqual(400, r.status_code)
-        self.assertIsNone(r.json.get("access_token"))
-        self.assertIsNone(r.json.get("refresh_token"))
-        self.assertEqual("Incorrect username or password", r.json["msg"])
+        self.assertEqual({"msg": "Incorrect username or password"}, r.json)
 
     @patch("flask_app.db.PyMongo")
     def test_login_wrong_username(self, mock_pymongo):
@@ -77,9 +75,7 @@ class TestLogin(unittest.TestCase):
 
         r = self.client.post("/auth/login", json=test_data)
         self.assertEqual(400, r.status_code)
-        self.assertIsNone(r.json.get("access_token"))
-        self.assertIsNone(r.json.get("refresh_token"))
-        self.assertEqual("Incorrect username or password", r.json["msg"])
+        self.assertEqual({"msg": "Incorrect username or password"}, r.json)
 
     def test_login_without_username(self):
         """Tests the login endpoint without a username"""
@@ -104,9 +100,7 @@ class TestLogin(unittest.TestCase):
 
         r = self.client.post("/auth/login", data=test_data)
         self.assertEqual(400, r.status_code)
-        self.assertIsNone(r.json.get("access_token"))
-        self.assertIsNone(r.json.get("refresh_token"))
-        self.assertEqual("Request body must be application/json", r.json["msg"])
+        self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
 
 if __name__ == '__main__':
