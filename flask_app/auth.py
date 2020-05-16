@@ -33,16 +33,16 @@ def build_bp(app):
         username = request.json.get("username", None)
         password = request.json.get("password", None)
 
-        db = get_db().primary
-
         if not username:
             return jsonify({"msg": "Username required"}), 400
         elif not password:
             return jsonify({"msg": "Password required"}), 400
-        elif db.auth.find_one({"username": username}):
-            return jsonify({"msg": "User {} is already registered".format(username)}), 400
         elif not USERNAME_PATTERN.match(username):
             return jsonify({"msg": "Username must only contain alphanumeric characters"}), 400
+
+        db = get_db().primary
+        if db.auth.find_one({"username": username}):
+            return jsonify({"msg": "User {} is already registered".format(username)}), 400
 
         db.auth.insert_one({
             "username": username,
@@ -64,12 +64,11 @@ def build_bp(app):
         username = request.json.get("username", None)
         password = request.json.get("password", None)
 
-        db = get_db().primary
-
         if not username:
             return jsonify({"msg": "Username required for login"}), 400
 
         # Check user credentials
+        db = get_db().primary
         user = db.auth.find_one({"username": username})
         password_hash = ""
         if user is not None and user.get("password") is not None:

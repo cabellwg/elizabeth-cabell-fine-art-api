@@ -81,11 +81,8 @@ class TestLogin(unittest.TestCase):
         self.assertIsNone(r.json.get("refresh_token"))
         self.assertEqual("Incorrect username or password", r.json["msg"])
 
-    @patch("flask_app.db.PyMongo")
-    def test_login_without_username(self, mock_pymongo):
+    def test_login_without_username(self):
         """Tests the login endpoint without a username"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
 
         test_data = {
             "password": "hunter2"
@@ -97,11 +94,8 @@ class TestLogin(unittest.TestCase):
         self.assertIsNone(r.json.get("refresh_token"))
         self.assertEqual("Username required for login", r.json["msg"])
 
-    @patch("flask_app.db.PyMongo")
-    def test_login_with_non_json(self, mock_pymongo):
+    def test_login_with_non_json(self):
         """Tests the login endpoint with incorrect data type"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
 
         test_data = {
             "username": "johndoe",
