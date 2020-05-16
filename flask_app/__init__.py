@@ -35,6 +35,9 @@ def create_app(test_env=None):
     from . import auth
     app.register_blueprint(auth.build_bp(app))
 
+    from . import art
+    app.register_blueprint(art.build_bp(app))
+
     return app
 
 
