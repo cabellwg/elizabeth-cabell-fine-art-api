@@ -1,12 +1,16 @@
-from docker_secrets import get_docker_secret
+import os
+import sys
 
 
-def safe_execute(default, exception, function, *args):
-    """Inline exception handling"""
-    try:
-        return function(*args)
-    except exception:
-        return default
+def read_secret(secret_name):
+    if secret_name is None:
+        print("Missing secret definition", file=sys.stderr)
+        return None
+    with open("/run/secrets/" + secret_name) as s:
+        secret = s.read().strip()
+        if secret == "":
+            print("Empty secret {}".format(secret_name))
+        return secret
 
 
 class Config:
@@ -21,8 +25,8 @@ class ProdConfig(Config):
     TESTING = False
     ALLOWED_ORIGINS = ["https://elizabethcabellfineart.com",
                        "https://www.elizabethcabellfineart.com"]
-    SECRET_KEY = safe_execute(None, ValueError, get_docker_secret, "secret-key")
-    JWT_SECRET_KEY = safe_execute(None, ValueError, get_docker_secret, "jwt-secret-key")
+    SECRET_KEY = read_secret(os.environ.get("SECRET_KEY_SECRET"))
+    JWT_SECRET_KEY = read_secret(os.environ.get("JWT_SECRET_KEY_SECRET"))
 
 
 class TestConfig(Config):

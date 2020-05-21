@@ -4,4 +4,3 @@ flask_cors==3.0.7
 flask_jwt_extended==3.24.1
 Flask-PyMongo==2.3.0
 requests==2.23.0
-git+https://github.com/cabellwg/python-docker-secrets@v2.0.0

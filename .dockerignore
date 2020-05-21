@@ -3,5 +3,6 @@ p3_*env
 .travis.yml
 .gitignore
 .git
+.coverage
 requirements.dev.txt
 requirements.test.txt
