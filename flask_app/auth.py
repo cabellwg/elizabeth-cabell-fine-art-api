@@ -13,7 +13,7 @@ from flask_jwt_extended import (
 
 from .db import get_db
 
-USERNAME_PATTERN = re.compile("[a-zA-Z0-9]+")
+USERNAME_PATTERN = re.compile("[a-zA-Z0-9_$@?!]+")
 
 
 def build_bp(app):
@@ -38,13 +38,13 @@ def build_bp(app):
         elif not password:
             return jsonify({"msg": "Password required"}), 400
         elif not USERNAME_PATTERN.match(username):
-            return jsonify({"msg": "Username must only contain alphanumeric characters"}), 400
+            return jsonify({"msg": "Username must only contain alphanumeric characters or _ or $"}), 400
 
-        db = get_db().primary
-        if db.auth.find_one({"username": username}):
+        auth = get_db().primary.auth
+        if auth.find_one({"username": username}):
             return jsonify({"msg": "User {} is already registered".format(username)}), 400
 
-        db.auth.insert_one({
+        auth.insert_one({
             "username": username,
             "password": generate_password_hash(password),
             "created": datetime.datetime.utcnow(),
@@ -68,8 +68,8 @@ def build_bp(app):
             return jsonify({"msg": "Username required for login"}), 400
 
         # Check user credentials
-        db = get_db().primary
-        user = db.auth.find_one({"username": username})
+        auth = get_db().primary.auth
+        user = auth.find_one({"username": username})
         password_hash = ""
         if user is not None and user.get("password") is not None:
             password_hash = user["password"]

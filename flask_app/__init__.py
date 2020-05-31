@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, g
+from flask import Flask
 from flask_jwt_extended import JWTManager
 
 
@@ -10,6 +10,7 @@ def create_app(test_env=None):
     :return: The application.
     """
     app = Flask(__name__)
+
     env = test_env if test_env is not None else os.environ["ENV"]
 
     if env == "prod":
@@ -22,7 +23,7 @@ def create_app(test_env=None):
     if app.secret_key is None or app.config["JWT_SECRET_KEY"] is None:
         raise ValueError("Could not get application secret keys")
 
-    JWTManager(app)
+    jwt = JWTManager(app)
 
     @app.route("/healthcheck", methods=["GET"])
     def healthcheck():
@@ -37,6 +38,9 @@ def create_app(test_env=None):
 
     from . import art
     app.register_blueprint(art.build_bp(app))
+
+    from . import psalms
+    app.register_blueprint(psalms.build_bp(app))
 
     return app
 

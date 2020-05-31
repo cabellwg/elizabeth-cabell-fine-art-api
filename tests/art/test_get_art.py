@@ -6,7 +6,7 @@ from mongomock import MongoClient
 import flask_app
 
 
-class TestLogin(unittest.TestCase):
+class TestGetArt(unittest.TestCase):
     """Tests the GET method of the art endpoint"""
 
     def setUp(self):
@@ -19,9 +19,9 @@ class TestLogin(unittest.TestCase):
                 "key": 0,
                 "path": "psalms/1/p1.1.jpg",
                 "title": "Psalm One – P1.1",
-                "materials": "Acrylic on canvas",
+                "medium": "Acrylic on canvas",
                 "size": "20\" x 20\"",
-                "price": "$2,000.00",
+                "price": 200000,
                 "collection": "Psalms",
                 "series": "1"
             },
@@ -29,9 +29,9 @@ class TestLogin(unittest.TestCase):
                 "key": 8,
                 "path": "psalms/1/beatus-vir.jpg",
                 "title": "Beatus Vir – P1.4",
-                "materials": "Oil on canvas",
+                "medium": "Oil on canvas",
                 "size": "20\" x 20\"",
-                "price": "Private collection",
+                "price": -100,
                 "collection": "Psalms",
                 "series": "1"
             },
@@ -39,9 +39,9 @@ class TestLogin(unittest.TestCase):
                 "key": 1,
                 "path": "florals/orangerie.jpg",
                 "title": "Orangerie",
-                "materials": "Oil, framed, gold impressionist",
+                "medium": "Oil, framed, gold impressionist",
                 "size": "18\" x 24\"",
-                "price": "$2,160.00",
+                "price": 216000,
                 "collection": "Florals"
             }
         ]
@@ -62,17 +62,17 @@ class TestLogin(unittest.TestCase):
                 "key": 0,
                 "path": "psalms/1/p1.1.jpg",
                 "title": "Psalm One – P1.1",
-                "materials": "Acrylic on canvas",
+                "medium": "Acrylic on canvas",
                 "size": "20\" x 20\"",
-                "price": "$2,000.00"
+                "price": 2000
             },
             {
                 "key": 8,
                 "path": "psalms/1/beatus-vir.jpg",
                 "title": "Beatus Vir – P1.4",
-                "materials": "Oil on canvas",
+                "medium": "Oil on canvas",
                 "size": "20\" x 20\"",
-                "price": "Private collection"
+                "price": -1
             }
         ]
 
@@ -113,9 +113,9 @@ class TestLogin(unittest.TestCase):
                 "key": 1,
                 "path": "florals/orangerie.jpg",
                 "title": "Orangerie",
-                "materials": "Oil, framed, gold impressionist",
+                "medium": "Oil, framed, gold impressionist",
                 "size": "18\" x 24\"",
-                "price": "$2,160.00"
+                "price": 2160
             }
         ]
 

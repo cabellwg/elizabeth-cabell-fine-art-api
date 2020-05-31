@@ -6,3 +6,11 @@
 [![Flask version](https://img.shields.io/badge/flask-1.1.2-777.svg)](https://flask.pocoo.org/)
 
 > Flask API to interact with art database.
+
+### Environment variables
+
+Required in production env
+
+- `SECRET_KEY_SECRET`: The name of the secret where the application secret key is stored
+- `JWT_SECRET_KEY_SECRET`: The name of the secret where the JWT secret key is stored
+- `IMAGE_STORE_DIR`: The name of the directory where the image store volume is mounted

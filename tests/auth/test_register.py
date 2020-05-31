@@ -77,7 +77,7 @@ class TestRegister(unittest.TestCase):
 
         r = self.client.post("/auth/register", json=test_data)
         self.assertEqual(400, r.status_code)
-        self.assertEqual({"msg": "Username must only contain alphanumeric characters"}, r.json)
+        self.assertEqual({"msg": "Username must only contain alphanumeric characters or _ or $"}, r.json)
 
     def test_registration_with_non_json(self):
         """Tests the authentication endpoint with the wrong data type"""

@@ -1,3 +1,7 @@
+from decimal import Decimal
+from bson.decimal128 import Decimal128
+from bson.codec_options import TypeCodec
+
 from flask import current_app, g
 from flask_pymongo import PyMongo
 

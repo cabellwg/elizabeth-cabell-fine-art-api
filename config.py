@@ -15,8 +15,13 @@ def read_secret(secret_name):
 
 class Config:
     """Settings for all environments"""
+    DEBUG = True
+    TESTING = True
+    ALLOWED_ORIGINS = ["*"]
     MONGO_URI = "mongodb://elizabeth-cabell-fine-art-db:27017/primary"
     BCRYPT_HANDLE_LONG_PASSWORDS = True
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    IMAGE_STORE_DUR = "./test-img-store"
 
 
 class ProdConfig(Config):
@@ -27,22 +32,17 @@ class ProdConfig(Config):
                        "https://www.elizabethcabellfineart.com"]
     SECRET_KEY = read_secret(os.environ.get("SECRET_KEY_SECRET"))
     JWT_SECRET_KEY = read_secret(os.environ.get("JWT_SECRET_KEY_SECRET"))
+    IMAGE_STORE_DIR = os.environ.get("IMAGE_STORE_DIR")
 
 
 class TestConfig(Config):
     """Test settings"""
-    DEBUG = True
-    TESTING = True
-    ALLOWED_ORIGINS = ["*"]
     SECRET_KEY = "test-secret-key"
     JWT_SECRET_KEY = "test-jwt-secret-key"
 
 
 class DevConfig(Config):
     """Development settings"""
-    DEBUG = True
-    TESTING = True
-    ALLOWED_ORIGINS = ["*"]
     SECRET_KEY = "dev-secret-key"
     JWT_SECRET_KEY = "dev-jwt-secret-key"
 
