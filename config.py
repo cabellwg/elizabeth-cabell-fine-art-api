@@ -22,6 +22,7 @@ class Config:
     BCRYPT_HANDLE_LONG_PASSWORDS = True
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     IMAGE_STORE_DIR = "./test-img-store"
+    SENTRY_DSN = "https://d1abe2a1db2848f8bab4bf37735d3b05@o395084.ingest.sentry.io/5259410"
 
 
 class ProdConfig(Config):
@@ -45,4 +46,3 @@ class DevConfig(Config):
     """Development settings"""
     SECRET_KEY = "dev-secret-key"
     JWT_SECRET_KEY = "dev-jwt-secret-key"
-

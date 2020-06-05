@@ -3,6 +3,7 @@ uwsgi==2.0.18
 flask_cors==3.0.7
 flask_jwt_extended==3.24.1
 Flask-PyMongo==2.3.0
-marshmallow==3.6.0
+marshmallow==3.6.1
 pillow==7.1.2
 requests==2.23.0
+sentry-sdk[flask]==0.14.4
