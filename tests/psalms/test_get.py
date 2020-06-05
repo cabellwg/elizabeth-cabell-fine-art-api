@@ -6,8 +6,8 @@ from mongomock import MongoClient
 import flask_app
 
 
-class TestGetPsalms(unittest.TestCase):
-    """Tests the psalms endpoint"""
+class TestGet(unittest.TestCase):
+    """Tests the GET method of the psalms endpoint"""
 
     def setUp(self):
         """Runs before each test method"""
