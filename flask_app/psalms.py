@@ -64,14 +64,23 @@ def build_bp(app):
     @jwt_required
     def upload_image_to_metadata_image_store():
         """Uploads a psalm image to the image store. Function is idempotent."""
+        if not request.content_type.startswith("multipart/form-data"):
+            return jsonify({"msg": "Please use multipart/form-data"}), 400
+
         file = request.files.get("file")
-        number = request.data.get("number")
-        image_type = request.data.get("imageType")
+        number = request.form.get("number")
+        image_type = request.form.get("imageType")
 
         if not file:
             return jsonify({"msg": "Request must include a file to upload"}), 400
         if len(file.filename) == 0:
             return jsonify({"msg": "Please choose a file"}), 400
+        try:
+            number = int(number)
+        except (TypeError, ValueError):
+            return jsonify({"msg": "Please use a valid Psalm number"}), 400
+        if number <= 0:
+            return jsonify({"msg": "Please use a valid Psalm number"}), 400
 
         db = get_db()
         psalm = db.primary.psalms.find_one({"number": number})
@@ -79,18 +88,21 @@ def build_bp(app):
             return jsonify({"msg": "Psalm {} not found".format(number)}), 404
 
         try:
-            with Image.open(file) as im:
+            with Image.open(file.stream) as im:
+                base_dir = app.config["IMAGE_STORE_DIR"]
+
+                if not os.path.isdir(base_dir):
+                    os.mkdir(base_dir)
+
                 if image_type == "thumbnail":
-                    base = os.path.join(app.config["IMAGE_STORE_DIR"], psalm["thumbnailPath"])
-                    im.save(base)
+                    base_name = os.path.join(base_dir, psalm["thumbnailPath"] + ".jpg")
+                    im.save(base_name)
                 elif image_type == "demo":
-                    base = os.path.join(app.config["IMAGE_STORE_DIR"], psalm["demoPath"])
-                    full_img = im
+                    base_name = os.path.join(base_dir, psalm["demoPath"])
                     large_img = resize_image(im, 800)
                     thumbnail_img = resize_image(im, 64)
-                    full_img.save(decorate_image_filename(base, "full"))
-                    large_img.save(decorate_image_filename(base, "large"))
-                    thumbnail_img.save(decorate_image_filename(base, "thumbnail"))
+                    large_img.save(decorate_image_filename(base_name, "large"))
+                    thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
                 else:
                     return jsonify({"msg": "Please enter a valid image type"}), 400
 

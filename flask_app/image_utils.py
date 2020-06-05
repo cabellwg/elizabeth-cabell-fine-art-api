@@ -9,8 +9,8 @@ def resize_image(image, max_axis_length):
     h = image.height
 
     if w > h:
-        return image.resize((max_axis_length, max_axis_length * (h / w)))
+        return image.resize((max_axis_length, round(max_axis_length * (h / w))))
     elif h > w:
-        return image.resize((max_axis_length * (w / h), max_axis_length))
+        return image.resize((round(max_axis_length * (w / h)), max_axis_length))
     else:
         return image.resize((max_axis_length, max_axis_length))

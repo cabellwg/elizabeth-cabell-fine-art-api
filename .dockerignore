@@ -6,3 +6,4 @@ p3_*env
 .coverage
 requirements.dev.txt
 requirements.test.txt
+tests

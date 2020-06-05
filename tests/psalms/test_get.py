@@ -24,10 +24,10 @@ class TestGet(unittest.TestCase):
         ]
 
     @patch("flask_app.db.PyMongo")
-    def test_get_psalms_metadata(self, mock_pymongo):
-        """Tries to get the metadata for an existing Psalm"""
+    def test_get_psalms(self, mock_pymongo):
+        """Tries to get the Psalms"""
         mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.psalmsMetadata.insert_many(self.test_metadata_docs)
+        mock_pymongo().primary.psalms.insert_many(self.test_metadata_docs)
 
         expected_response = [
             {
@@ -38,8 +38,9 @@ class TestGet(unittest.TestCase):
             }
         ]
 
-        r = self.client.get("/art/psalms-metadata")
-        self.assertTrue(expected_response, r.json)
+        r = self.client.get("/psalms/")
+        self.assertEqual(200, r.status_code)
+        self.assertEqual(expected_response, r.json)
 
 
 if __name__ == '__main__':

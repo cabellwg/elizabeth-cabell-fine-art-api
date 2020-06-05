@@ -7,7 +7,7 @@ from mongomock import MongoClient
 import flask_app
 
 
-class TestUpdateArt(unittest.TestCase):
+class TestUpdate(unittest.TestCase):
     """Tests the POST method of the art/update endpoint"""
 
     def setUp(self):

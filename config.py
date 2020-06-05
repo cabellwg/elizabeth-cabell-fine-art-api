@@ -21,7 +21,7 @@ class Config:
     MONGO_URI = "mongodb://elizabeth-cabell-fine-art-db:27017/primary"
     BCRYPT_HANDLE_LONG_PASSWORDS = True
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    IMAGE_STORE_DUR = "./test-img-store"
+    IMAGE_STORE_DIR = "./test-img-store"
 
 
 class ProdConfig(Config):

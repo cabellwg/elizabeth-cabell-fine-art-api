@@ -7,7 +7,7 @@ from mongomock import MongoClient
 import flask_app
 
 
-class TestPutArt(unittest.TestCase):
+class TestPut(unittest.TestCase):
     """Tests the PUT method of the art endpoint"""
 
     def setUp(self):

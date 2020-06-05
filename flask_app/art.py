@@ -1,16 +1,16 @@
 import os
 
+from PIL import Image
 from flask import (
     Blueprint, request, jsonify
 )
 from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError, RAISE
-from PIL import Image
 
 from .db import get_db
-from .schemas import PieceSchema
 from .image_utils import decorate_image_filename, resize_image
+from .schemas import PieceSchema
 
 
 def build_bp(app):
@@ -117,32 +117,42 @@ def build_bp(app):
     @jwt_required
     def upload_piece_to_image_store():
         """Uploads an image to the image store. Function is idempotent."""
+        if not request.content_type.startswith("multipart/form-data"):
+            return jsonify({"msg": "Please use multipart/form-data"}), 400
+
         file = request.files.get("file")
-        title = request.data.get("title")
+        title = request.form.get("title")
 
         if not file:
             return jsonify({"msg": "Request must include a file to upload"}), 400
         if len(file.filename) == 0:
             return jsonify({"msg": "Please choose a file"}), 400
+        if title is None or len(title) == 0:
+            return jsonify({"msg": "Please specify a piece"}), 400
 
         art = get_db().primary.art
         piece = art.find_one({"title": title})
         if not piece:
-            return jsonify({"msg": "Piece with title {} not found".format(title)}), 404
+            return jsonify({"msg": "Piece with title \"{}\" not found".format(title)}), 404
 
         try:
-            with Image.open(file) as im:
-                base = os.path.join(app.config["IMAGE_STORE_DIR"], piece["path"])
+            with Image.open(file.stream) as im:
+                base_dir = app.config["IMAGE_STORE_DIR"]
+
+                if not os.path.isdir(base_dir):
+                    os.mkdir(base_dir)
+
+                base_name = os.path.join(base_dir, piece["path"])
 
                 full_img = im
                 large_img = resize_image(im, 1000)
                 thumbnail_img = resize_image(im, 64)
 
-                full_img.save(decorate_image_filename(base, "full"))
-                large_img.save(decorate_image_filename(base, "large"))
-                thumbnail_img.save(decorate_image_filename(base, "thumbnail"))
+                full_img.save(decorate_image_filename(base_name, "full"))
+                large_img.save(decorate_image_filename(base_name, "large"))
+                thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
         except IOError:
-            jsonify({"msg": "Please upload a valid image file."}), 400
+            return jsonify({"msg": "Please upload a valid image file."}), 400
 
         return jsonify({}), 201
 
