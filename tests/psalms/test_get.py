@@ -23,11 +23,11 @@ class TestGet(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_get_psalms(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_get_psalms(self, mock_MongoClient):
         """Tries to get the Psalms"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.psalms.insert_many(self.test_metadata_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.psalms.insert_many(self.test_metadata_docs)
 
         expected_response = [
             {

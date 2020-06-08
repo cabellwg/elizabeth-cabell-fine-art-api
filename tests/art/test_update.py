@@ -47,12 +47,12 @@ class TestUpdate(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_update_piece(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_update_piece(self, mock_MongoClient):
         """Tries to update a piece"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.art.insert_many(self.test_art_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         login_data = {
             "username": "johndoe",
@@ -77,15 +77,15 @@ class TestUpdate(unittest.TestCase):
         r = self.client.post("/art/update", json=test_data, headers=test_headers)
         self.assertEqual(200, r.status_code)
 
-        new_piece = mock_pymongo().primary.art.find_one({"title": "Test Piece"})
+        new_piece = mock_MongoClient().test.art.find_one({"title": "Test Piece"})
         self.assertEqual(100000, new_piece["price"])
 
-    @patch("flask_app.db.PyMongo")
-    def test_update_psalm(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_update_psalm(self, mock_MongoClient):
         """Tries to replace a piece"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.art.insert_many(self.test_art_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         login_data = {
             "username": "johndoe",
@@ -111,7 +111,7 @@ class TestUpdate(unittest.TestCase):
         r = self.client.post("/art/update", json=test_data, headers=test_headers)
         self.assertEqual(200, r.status_code)
 
-        new_piece = mock_pymongo().primary.art.find_one({"title": "Test Psalm"})
+        new_piece = mock_MongoClient().test.art.find_one({"title": "Test Psalm"})
         self.assertEqual(100000, new_piece["price"])
         self.assertEqual("test", new_piece["size"])
 
@@ -131,11 +131,11 @@ class TestUpdate(unittest.TestCase):
         r = self.client.post("/art/update", json=test_data)
         self.assertEqual(401, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_update_piece_with_bad_credentials(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_update_piece_with_bad_credentials(self, mock_MongoClient):
         """Tries to replace a piece with an incorrect token"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -164,11 +164,11 @@ class TestUpdate(unittest.TestCase):
         r = self.client.post("/art/update", json=test_data, headers=test_headers)
         self.assertEqual(422, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_content_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_content_type(self, mock_MongoClient):
         """Tries to use form data"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -189,11 +189,11 @@ class TestUpdate(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_nonexistent_piece(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_nonexistent_piece(self, mock_MongoClient):
         """Tries to replace a piece that doesn't exist"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",

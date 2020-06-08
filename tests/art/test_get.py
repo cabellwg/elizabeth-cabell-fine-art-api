@@ -46,11 +46,11 @@ class TestGet(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_get_psalms(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_get_psalms(self, mock_MongoClient):
         """Tries to get the Psalms in an existing series"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.art.insert_many(self.test_art_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         test_data = {
             "collection": "Psalms",
@@ -79,11 +79,11 @@ class TestGet(unittest.TestCase):
         r = self.client.get("/art/", json=test_data)
         self.assertEqual(expected_response, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_get_psalms_with_invalid_series(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_get_psalms_with_invalid_series(self, mock_MongoClient):
         """Tries to get the Psalms in a nonexistent series"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.art.insert_many(self.test_art_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         test_data = {
             "collection": "Psalms",
@@ -98,11 +98,11 @@ class TestGet(unittest.TestCase):
         self.assertEqual(404, r.status_code)
         self.assertEqual(expected_response, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_get_florals(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_get_florals(self, mock_MongoClient):
         """Tries to get the artwork from the Florals collection"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.art.insert_many(self.test_art_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         test_data = {
             "collection": "Florals"
@@ -123,11 +123,11 @@ class TestGet(unittest.TestCase):
         self.assertEqual(200, r.status_code)
         self.assertEqual(expected_response, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_get_nonexistent_collection(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_get_nonexistent_collection(self, mock_MongoClient):
         """Tries to get the artwork from the Florals collection"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.art.insert_many(self.test_art_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         test_data = {
             "collection": "There's no collection with this name"

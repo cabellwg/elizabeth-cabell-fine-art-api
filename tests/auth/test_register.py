@@ -30,11 +30,11 @@ class TestRegister(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_registration_successful(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_registration_successful(self, mock_MongoClient):
         """Tests the registration endpoint with good login info"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         test_data = {
             "username": "johndoe",
@@ -43,7 +43,7 @@ class TestRegister(unittest.TestCase):
 
         r = self.client.post("/auth/register", json=test_data)
         self.assertEqual(200, r.status_code)
-        self.assertIsNotNone(self.mock_db.primary.auth.find_one({"username": "johndoe"}))
+        self.assertIsNotNone(self.mock_db.test.apiAuth.find_one({"username": "johndoe"}))
 
     def test_registration_without_password(self):
         """Tests the registration endpoint with failed login info"""
@@ -71,7 +71,7 @@ class TestRegister(unittest.TestCase):
         """Tests the registration endpoint with an invalid username"""
 
         test_data = {
-            "username": "*\"}); db.auth.delete_many({})",
+            "username": "*\"}); db.apiAuth.delete_many({})",
             "password": "hunter2"
         }
 

@@ -25,10 +25,11 @@ def create_app(test_env=None):
     if app.secret_key is None or app.config["JWT_SECRET_KEY"] is None:
         raise ValueError("Could not get application secret keys")
 
-    sentry_sdk.init(
-            dsn=app.config["SENTRY_DSN"],
-            integrations=[FlaskIntegration()]
-    )
+    if env == "prod":
+        sentry_sdk.init(
+                dsn=app.config["SENTRY_DSN"],
+                integrations=[FlaskIntegration()]
+        )
 
     jwt = JWTManager(app)
 

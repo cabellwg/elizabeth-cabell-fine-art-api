@@ -25,11 +25,11 @@ class TestPut(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_psalm(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_psalm(self, mock_MongoClient):
         """Tries to insert a piece"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -67,11 +67,11 @@ class TestPut(unittest.TestCase):
         r = self.client.put("/psalms/", json=test_data)
         self.assertEqual(401, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_psalm_with_bad_credentials(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_psalm_with_bad_credentials(self, mock_MongoClient):
         """Tries to insert a piece with an incorrect token"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -92,11 +92,11 @@ class TestPut(unittest.TestCase):
         r = self.client.put("/psalms/", json=test_data, headers=test_headers)
         self.assertEqual(422, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_content_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_content_type(self, mock_MongoClient):
         """Tries to use form data"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -115,11 +115,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_psalm_without_field(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_psalm_without_field(self, mock_MongoClient):
         """Tries to insert a psalm without specifying a mandatory field"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -155,11 +155,11 @@ class TestPut(unittest.TestCase):
                               }
                           }}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_psalm_twice(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_psalm_twice(self, mock_MongoClient):
         """Tries to insert a psalm with the same number twice"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -191,11 +191,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Psalm 2 already exists"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_invalid_color(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_invalid_color(self, mock_MongoClient):
         """Tries to insert a psalm with an invalid thumbnail color"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -226,11 +226,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"demoThumbnailColor": ["Demo thumbnail color is not a valid hex color code"]}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_invalid_number(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_invalid_number(self, mock_MongoClient):
         """Tries to insert a psalm with an invalid key"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",

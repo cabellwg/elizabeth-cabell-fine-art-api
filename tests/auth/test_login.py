@@ -31,11 +31,11 @@ class TestLogin(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_login_successful(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_login_successful(self, mock_MongoClient):
         """Tests the login endpoint with good user credentials"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         test_data = {
             "username": "johndoe",
@@ -47,11 +47,11 @@ class TestLogin(unittest.TestCase):
         self.assertIsNotNone(r.json["access_token"])
         self.assertIsNotNone(r.json["refresh_token"])
 
-    @patch("flask_app.db.PyMongo")
-    def test_login_wrong_password(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_login_wrong_password(self, mock_MongoClient):
         """Tests the login endpoint with incorrect password"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         test_data = {
             "username": "johndoe",
@@ -62,11 +62,11 @@ class TestLogin(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Incorrect username or password"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_login_wrong_username(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_login_wrong_username(self, mock_MongoClient):
         """Tests the login endpoint with incorrect username"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         test_data = {
             "username": "1337",

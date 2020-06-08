@@ -25,11 +25,11 @@ class TestPut(unittest.TestCase):
             }
         ]
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_piece(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_piece(self, mock_MongoClient):
         """Tries to insert a piece"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -54,11 +54,11 @@ class TestPut(unittest.TestCase):
         r = self.client.put("/art/", json=test_data, headers=test_headers)
         self.assertEqual(201, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_psalm(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_psalm(self, mock_MongoClient):
         """Tries to insert a piece"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -100,11 +100,11 @@ class TestPut(unittest.TestCase):
         r = self.client.put("/art/", json=test_data)
         self.assertEqual(401, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_put_piece_with_bad_credentials(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_put_piece_with_bad_credentials(self, mock_MongoClient):
         """Tries to insert a piece with an incorrect token"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -133,11 +133,11 @@ class TestPut(unittest.TestCase):
         r = self.client.put("/art/", json=test_data, headers=test_headers)
         self.assertEqual(422, r.status_code)
 
-    @patch("flask_app.db.PyMongo")
-    def test_content_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_content_type(self, mock_MongoClient):
         """Tries to use form data"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -158,11 +158,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_piece_without_field(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_piece_without_field(self, mock_MongoClient):
         """Tries to insert a piece without specifying a mandatory field"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -188,11 +188,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"title": ["Missing data for required field."]}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_piece_twice(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_piece_twice(self, mock_MongoClient):
         """Tries to insert a piece with the same title twice"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -220,11 +220,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Piece with title Test Piece already exists"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_piece_wrong_key_and_price_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_piece_wrong_key_and_price_type(self, mock_MongoClient):
         """Tries to insert a piece with a string key"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",
@@ -251,11 +251,11 @@ class TestPut(unittest.TestCase):
         self.assertEqual(400, r.status_code)
         self.assertEqual({"key": ["Not a valid integer."], "price": ["Not a valid number."]}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_piece_wrong_key_value(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_piece_wrong_key_value(self, mock_MongoClient):
         """Tries to insert a piece with a negative key value"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
 
         login_data = {
             "username": "johndoe",

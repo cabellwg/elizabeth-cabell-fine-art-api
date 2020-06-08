@@ -20,13 +20,13 @@ def build_bp(app):
     # Begin route definitions
 
     @bp.route("/", methods=["GET"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["GET"])
     def get_psalms():
         db = get_db()
 
-        query_res = db.primary.psalms.find()
+        query_res = db.database.psalms.find()
         metadata = []
         for psalm in query_res:
             psalm.pop("_id", None)
@@ -35,7 +35,7 @@ def build_bp(app):
         return jsonify(metadata), 200
 
     @bp.route("/", methods=["PUT"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["PUT"])
     @jwt_required
@@ -49,7 +49,7 @@ def build_bp(app):
             return jsonify(e.messages), 400
 
         db = get_db()
-        psalms = db.primary.psalms
+        psalms = db.database.psalms
 
         if psalms.find_one({"number": psalm["number"]}):
             return jsonify({"msg": "Psalm {} already exists".format(psalm["number"])}), 400
@@ -58,7 +58,7 @@ def build_bp(app):
         return jsonify({}), 201
 
     @bp.route("/upload", methods=["POST"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])
     @jwt_required
@@ -83,7 +83,7 @@ def build_bp(app):
             return jsonify({"msg": "Please use a valid Psalm number"}), 400
 
         db = get_db()
-        psalm = db.primary.psalms.find_one({"number": number})
+        psalm = db.database.psalms.find_one({"number": number})
         if not psalm:
             return jsonify({"msg": "Psalm {} not found".format(number)}), 404
 

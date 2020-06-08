@@ -1,15 +1,12 @@
-from decimal import Decimal
-from bson.decimal128 import Decimal128
-from bson.codec_options import TypeCodec
-
 from flask import current_app, g
-from flask_pymongo import PyMongo
+from pymongo import MongoClient
 
 
 def get_db():
     """Gets the connection to the art database"""
     if "db" not in g:
-        g.db = PyMongo(current_app)
+        g.db = MongoClient(current_app.config["MONGO_URI"])
+        g.db.database = g.db[current_app.config["DB_NAME"]]
     return g.db
 
 

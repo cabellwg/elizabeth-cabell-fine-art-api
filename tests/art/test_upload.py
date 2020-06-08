@@ -57,12 +57,12 @@ class TestPut(unittest.TestCase):
         if os.path.isdir(base_dir):
             shutil.rmtree(base_dir)
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_thumbnail(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_thumbnail(self, mock_MongoClient):
         """Tries to upload a thumbnail image"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -92,12 +92,12 @@ class TestPut(unittest.TestCase):
             base_dir = self.client.application.config["IMAGE_STORE_DIR"]
             self.assertTrue(os.path.exists(os.path.join(base_dir, "test_thumbnail_path.jpg")))
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_with_missing_psalm(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_with_missing_psalm(self, mock_MongoClient):
         """Tries to upload a thumbnail image"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -125,12 +125,12 @@ class TestPut(unittest.TestCase):
             self.assertEqual(404, r.status_code)
             self.assertEqual({"msg": "Psalm 1 not found"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_demo(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_demo(self, mock_MongoClient):
         """Tries to upload a demo image"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -161,12 +161,12 @@ class TestPut(unittest.TestCase):
             self.assertTrue(os.path.exists(os.path.join(base_dir, "test_demo_path-large.jpg")))
             self.assertTrue(os.path.exists(os.path.join(base_dir, "test_demo_path-thumbnail.jpg")))
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_image_with_invalid_number(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_image_with_invalid_number(self, mock_MongoClient):
         """Tries to upload an image with an invalid Psalm number"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -194,12 +194,12 @@ class TestPut(unittest.TestCase):
             self.assertEqual(400, r.status_code)
             self.assertEqual({"msg": "Please use a valid Psalm number"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_image_with_invalid_number_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_image_with_invalid_number_type(self, mock_MongoClient):
         """Tries to upload an image with an invalid Psalm number type"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -227,12 +227,12 @@ class TestPut(unittest.TestCase):
             self.assertEqual(400, r.status_code)
             self.assertEqual({"msg": "Please use a valid Psalm number"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_piece_with_invalid_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_piece_with_invalid_type(self, mock_MongoClient):
         """Tries to upload an image with an invalid type"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -260,12 +260,12 @@ class TestPut(unittest.TestCase):
             self.assertEqual(400, r.status_code)
             self.assertEqual({"msg": "Please enter a valid image type"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_with_invalid_content_type(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_with_invalid_content_type(self, mock_MongoClient):
         """Tries to upload an image with the wrong content type"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",
@@ -287,12 +287,12 @@ class TestPut(unittest.TestCase):
             self.assertEqual(400, r.status_code)
             self.assertEqual({"msg": "Please use multipart/form-data"}, r.json)
 
-    @patch("flask_app.db.PyMongo")
-    def test_upload_without_file(self, mock_pymongo):
+    @patch("flask_app.db.MongoClient")
+    def test_upload_without_file(self, mock_MongoClient):
         """Tries to upload a piece without an image file"""
-        mock_pymongo.return_value = self.mock_db
-        mock_pymongo().primary.auth.insert_many(self.test_user_docs)
-        mock_pymongo().primary.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
 
         login_data = {
             "username": "johndoe",

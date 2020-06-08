@@ -20,14 +20,14 @@ def build_bp(app):
     # Begin route definitions
 
     @bp.route("/", methods=["GET"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["GET"])
     def get_pieces():
         if not request.is_json:
             return jsonify({"msg": "Request body must be application/json"}), 400
 
-        db = get_db()
+        db = get_db().database
 
         collection = request.json.get("collection")
         series = request.json.get("series")
@@ -47,14 +47,14 @@ def build_bp(app):
                 "collection": collection
             }
 
-        num_results = db.primary.art.count_documents(query_filter)
+        num_results = db.art.count_documents(query_filter)
 
         if num_results == 0:
             return jsonify({
                 "msg": "No artwork matching the parameters was found"
             }), 404
 
-        query_res = db.primary.art.find(query_filter)
+        query_res = db.art.find(query_filter)
 
         metadata = []
         for piece in query_res:
@@ -67,7 +67,7 @@ def build_bp(app):
         return jsonify(metadata), 200
 
     @bp.route("/", methods=["PUT"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["PUT"])
     @jwt_required
@@ -80,7 +80,7 @@ def build_bp(app):
         except ValidationError as e:
             return jsonify(e.messages), 400
 
-        art = get_db().primary.art
+        art = get_db().database.art
 
         if art.find_one({"title": piece["title"]}):
             return jsonify({"msg": "Piece with title {} already exists".format(piece["title"])}), 400
@@ -89,7 +89,7 @@ def build_bp(app):
         return jsonify({}), 201
 
     @bp.route("/update", methods=["POST"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])
     @jwt_required
@@ -102,7 +102,7 @@ def build_bp(app):
         except ValidationError as e:
             return jsonify(e.messages), 400
 
-        art = get_db().primary.art
+        art = get_db().database.art
 
         result = art.replace_one({"title": new_piece["title"]}, new_piece)
         if result.matched_count != 1:
@@ -111,7 +111,7 @@ def build_bp(app):
         return jsonify({}), 200
 
     @bp.route("/upload", methods=["POST"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])
     @jwt_required
@@ -130,7 +130,7 @@ def build_bp(app):
         if title is None or len(title) == 0:
             return jsonify({"msg": "Please specify a piece"}), 400
 
-        art = get_db().primary.art
+        art = get_db().database.art
         piece = art.find_one({"title": title})
         if not piece:
             return jsonify({"msg": "Piece with title \"{}\" not found".format(title)}), 404

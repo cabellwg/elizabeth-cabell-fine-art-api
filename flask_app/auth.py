@@ -23,7 +23,7 @@ def build_bp(app):
     # Begin route definitions
 
     @bp.route("/register", methods=["POST"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])
     def register():
@@ -40,7 +40,7 @@ def build_bp(app):
         elif not USERNAME_PATTERN.match(username):
             return jsonify({"msg": "Username must only contain alphanumeric characters or _ or $"}), 400
 
-        auth = get_db().primary.auth
+        auth = get_db().database.apiAuth
         if auth.find_one({"username": username}):
             return jsonify({"msg": "User {} is already registered".format(username)}), 400
 
@@ -54,7 +54,7 @@ def build_bp(app):
         return jsonify({"msg": "User created, you may now log in"}), 200
 
     @bp.route("/login", methods=["POST"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])
     def login():
@@ -68,8 +68,11 @@ def build_bp(app):
             return jsonify({"msg": "Username required for login"}), 400
 
         # Check user credentials
-        auth = get_db().primary.auth
-        user = auth.find_one({"username": username})
+        auth = get_db().database.apiAuth
+        try:
+            user = auth.find_one({"username": username})
+        except Exception as e:
+            print(e)
         password_hash = ""
         if user is not None and user.get("password") is not None:
             password_hash = user["password"]
@@ -84,7 +87,7 @@ def build_bp(app):
         return jsonify({"msg": "Incorrect username or password"}), 400
 
     @bp.route("/refresh", methods=["POST"])
-    @cross_origin(origins=[app.config["ALLOWED_ORIGINS"]],
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])
     @jwt_refresh_token_required
