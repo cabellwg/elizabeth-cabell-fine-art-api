@@ -79,7 +79,7 @@ class TestPut(unittest.TestCase):
 
             test_headers = {
                 "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
@@ -114,7 +114,7 @@ class TestPut(unittest.TestCase):
 
             test_headers = {
                 "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
@@ -147,7 +147,7 @@ class TestPut(unittest.TestCase):
 
             test_headers = {
                 "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
@@ -183,7 +183,7 @@ class TestPut(unittest.TestCase):
 
             test_headers = {
                 "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
@@ -216,7 +216,7 @@ class TestPut(unittest.TestCase):
 
             test_headers = {
                 "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
@@ -249,7 +249,7 @@ class TestPut(unittest.TestCase):
 
             test_headers = {
                 "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
@@ -277,7 +277,7 @@ class TestPut(unittest.TestCase):
         with open("test.jpg", mode="rb") as im:
             test_headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + login_response.json.get("access_token")
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
             builder = EnvironBuilder(app=self.client.application, path="/psalms/upload",
@@ -308,7 +308,7 @@ class TestPut(unittest.TestCase):
 
         test_headers = {
             "Content-Type": "multipart/form-data",
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.post("/psalms/upload", data=test_data, headers=test_headers)

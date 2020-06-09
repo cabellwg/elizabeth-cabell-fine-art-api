@@ -71,7 +71,7 @@ class TestUpdate(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.post("/art/update", json=test_data, headers=test_headers)
@@ -105,7 +105,7 @@ class TestUpdate(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.post("/art/update", json=test_data, headers=test_headers)
@@ -182,7 +182,7 @@ class TestUpdate(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.post("/art/update", data=test_data, headers=test_headers)
@@ -213,7 +213,7 @@ class TestUpdate(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         self.client.post("/art/update", json=test_data, headers=test_headers)

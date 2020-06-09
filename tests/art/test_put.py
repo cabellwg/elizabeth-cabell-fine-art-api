@@ -48,7 +48,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.put("/art/", json=test_data, headers=test_headers)
@@ -78,7 +78,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.put("/art/", json=test_data, headers=test_headers)
@@ -151,7 +151,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.put("/art/", data=test_data, headers=test_headers)
@@ -181,7 +181,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.put("/art/", json=test_data, headers=test_headers)
@@ -212,7 +212,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         self.client.put("/art/", json=test_data, headers=test_headers)
@@ -244,7 +244,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.put("/art/", json=test_data, headers=test_headers)
@@ -275,7 +275,7 @@ class TestPut(unittest.TestCase):
         }
 
         test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("access_token")
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
         r = self.client.put("/art/", json=test_data, headers=test_headers)
