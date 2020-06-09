@@ -44,7 +44,7 @@ class TestLogin(unittest.TestCase):
 
         r = self.client.post("/auth/login", json=test_data)
         self.assertEqual(200, r.status_code)
-        self.assertIsNotNone(r.json["access_token"])
+        self.assertIsNotNone(r.json["accessToken"])
 
     @patch("flask_app.db.MongoClient")
     def test_login_wrong_password(self, mock_MongoClient):
@@ -85,8 +85,7 @@ class TestLogin(unittest.TestCase):
 
         r = self.client.post("/auth/login", json=test_data)
         self.assertEqual(400, r.status_code)
-        self.assertIsNone(r.json.get("access_token"))
-        self.assertIsNone(r.json.get("refresh_token"))
+        self.assertIsNone(r.json.get("accessToken"))
         self.assertEqual("Username required for login", r.json["msg"])
 
     def test_login_with_non_json(self):

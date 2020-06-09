@@ -7,7 +7,7 @@ from flask import (
 )
 from flask_cors import cross_origin
 from flask_jwt_extended import (
-    create_access_token
+    create_access_token, jwt_required
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -82,13 +82,21 @@ def build_bp(app):
 
         if password_hash != "" and check_password_hash(password_hash, password):
             tokens = {
-                "access_token": create_access_token(identity=username)
+                "accessToken": create_access_token(identity=username)
             }
             return jsonify(tokens), 200
         else:
             sleep(0.5)
 
         return jsonify({"msg": "Incorrect username or password"}), 400
+
+    @bp.route("/token-verify", methods=["POST"])
+    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
+                  allow_headers=["Content-Type", "Authorization"],
+                  methods=["POST"])
+    @jwt_required
+    def verify_token():
+        return jsonify({}), 200
 
     # End route definitions
 
