@@ -69,4 +69,4 @@ class DevConfig(Config):
     """Development settings"""
     SECRET_KEY = "dev-secret-key"
     JWT_SECRET_KEY = "dev-jwt-secret-key"
-    USER_REGISTRATION_CODE = "test-registration-code"
+    USER_REGISTRATION_CODE = "dev-registration-code"

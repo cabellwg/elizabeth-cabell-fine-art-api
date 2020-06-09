@@ -1,19 +1,19 @@
 import datetime
 import re
+from time import sleep
 
 from flask import (
     Blueprint, request, jsonify
 )
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask_cors import cross_origin
 from flask_jwt_extended import (
-    create_access_token, create_refresh_token, jwt_refresh_token_required,
-    get_jwt_identity
+    create_access_token
 )
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
 
-USERNAME_PATTERN = re.compile("[a-zA-Z0-9_$@?!]+")
+USERNAME_PATTERN = re.compile("[a-zA-Z0-9_$]+")
 
 
 def build_bp(app):
@@ -80,26 +80,15 @@ def build_bp(app):
         if user is not None and user.get("password") is not None:
             password_hash = user["password"]
 
-        if check_password_hash(password_hash, password):
+        if password_hash != "" and check_password_hash(password_hash, password):
             tokens = {
-                "access_token": create_access_token(identity=username),
-                "refresh_token": create_refresh_token(identity=username)
+                "access_token": create_access_token(identity=username)
             }
             return jsonify(tokens), 200
+        else:
+            sleep(0.5)
 
         return jsonify({"msg": "Incorrect username or password"}), 400
-
-    @bp.route("/refresh", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
-    @jwt_refresh_token_required
-    def refresh():
-        current_user = get_jwt_identity()
-        ret = {
-            "access_token": create_access_token(identity=current_user)
-        }
-        return jsonify(ret), 200
 
     # End route definitions
 
