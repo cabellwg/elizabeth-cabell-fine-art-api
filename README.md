@@ -13,4 +13,5 @@ Required in production env
 - `SECRET_KEY_SECRET`: The name of the secret where the application secret key is stored
 - `JWT_SECRET_KEY_SECRET`: The name of the secret where the JWT secret key is stored
 - `DB_PASS_SECRET`: The name of the secret where the database password is stored
+- `USER_RCODE_SECRET`: The name of the secret where the user registration code is stored
 - `IMAGE_STORE_DIR`: The name of the directory where the image store volume is mounted

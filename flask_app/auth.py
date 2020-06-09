@@ -32,6 +32,7 @@ def build_bp(app):
 
         username = request.json.get("username", None)
         password = request.json.get("password", None)
+        code = request.json.get("registrationCode", None)
 
         if not username:
             return jsonify({"msg": "Username required"}), 400
@@ -39,6 +40,8 @@ def build_bp(app):
             return jsonify({"msg": "Password required"}), 400
         elif not USERNAME_PATTERN.match(username):
             return jsonify({"msg": "Username must only contain alphanumeric characters or _ or $"}), 400
+        elif not code == app.config["USER_REGISTRATION_CODE"]:
+            return jsonify({"msg": "Invalid registration code"}), 400
 
         auth = get_db().database.apiAuth
         if auth.find_one({"username": username}):

@@ -5,7 +5,8 @@ import json
 
 def read_secret(secret_name):
     if secret_name is None:
-        print("Missing secret definition (ignore unless in production)", file=sys.stderr)
+        if os.environ.get("ENV") == "prod":
+            print("Missing secret definition", file=sys.stderr)
         return None
     with open("/run/secrets/" + secret_name) as s:
         secret = s.read().strip()
@@ -16,7 +17,12 @@ def read_secret(secret_name):
 
 def read_key(key_name):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(dir_path, ".auth_keys.json")) as keys:
+    keysfile = os.path.join(dir_path, ".auth_keys.json")
+    if not os.path.exists(keysfile):
+        if os.environ.get("ENV") == "dev":
+            print("Missing .auth_keys.json", file=sys.stderr)
+        return None
+    with open(keysfile) as keys:
         auth_keys = json.load(keys)
         return auth_keys[key_name]
 
@@ -46,6 +52,7 @@ class ProdConfig(Config):
     DB_NAME = "prod"
     SECRET_KEY = read_secret(os.environ.get("SECRET_KEY_SECRET"))
     JWT_SECRET_KEY = read_secret(os.environ.get("JWT_SECRET_KEY_SECRET"))
+    USER_REGISTRATION_CODE = read_secret(os.environ.get("USER_RCODE_SECRET"))
     IMAGE_STORE_DIR = os.environ.get("IMAGE_STORE_DIR")
 
 
@@ -53,9 +60,13 @@ class TestConfig(Config):
     """Test settings"""
     SECRET_KEY = "test-secret-key"
     JWT_SECRET_KEY = "test-jwt-secret-key"
+    USER_REGISTRATION_CODE = "test-registration-code"
+    MONGO_URI = "mongodb+srv://fakeuser:fakepass@fake.cluster.net/test?retryWrites=true&w" \
+                "=majority"
 
 
 class DevConfig(Config):
     """Development settings"""
     SECRET_KEY = "dev-secret-key"
     JWT_SECRET_KEY = "dev-jwt-secret-key"
+    USER_REGISTRATION_CODE = "test-registration-code"

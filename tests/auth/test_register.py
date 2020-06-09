@@ -1,5 +1,5 @@
-import unittest
 import datetime
+import unittest
 from unittest.mock import patch
 
 from mongomock import MongoClient
@@ -39,17 +39,35 @@ class TestRegister(unittest.TestCase):
         test_data = {
             "username": "johndoe",
             "password": "hunter2",
+            "registrationCode": "test-registration-code"
         }
 
         r = self.client.post("/auth/register", json=test_data)
         self.assertEqual(200, r.status_code)
         self.assertIsNotNone(self.mock_db.test.apiAuth.find_one({"username": "johndoe"}))
 
+    @patch("flask_app.db.MongoClient")
+    def test_registration_with_wrong_rcode(self, mock_MongoClient):
+        """Tests the registration endpoint with the wrong registration code"""
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+
+        test_data = {
+            "username": "johndoe",
+            "password": "hunter2",
+            "registrationCode": "wrong-registration-code"
+        }
+
+        r = self.client.post("/auth/register", json=test_data)
+        self.assertEqual(400, r.status_code)
+        self.assertEqual({"msg": "Invalid registration code"}, r.json)
+
     def test_registration_without_password(self):
         """Tests the registration endpoint with failed login info"""
 
         test_data = {
-            "username": "facebookmygrandsonnathan"
+            "username": "facebookmygrandsonnathan",
+            "registrationCode": "test-registration-code"
         }
 
         r = self.client.post("/auth/register", json=test_data)
@@ -60,7 +78,8 @@ class TestRegister(unittest.TestCase):
         """Tests the registration endpoint without a username"""
 
         test_data = {
-            "password": "Password1"
+            "password": "Password1",
+            "registrationCode": "test-registration-code"
         }
 
         r = self.client.post("/auth/register", json=test_data)
