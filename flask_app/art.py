@@ -66,7 +66,7 @@ def build_bp(app):
 
         return jsonify(metadata), 200
 
-    @bp.route("/", methods=["PUT"])
+    @bp.route("/add", methods=["PUT"])
     @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["PUT"])

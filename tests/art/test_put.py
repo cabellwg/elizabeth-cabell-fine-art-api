@@ -51,7 +51,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(201, r.status_code)
 
     @patch("flask_app.db.MongoClient")
@@ -81,7 +81,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(201, r.status_code)
 
     def test_put_piece_without_token(self):
@@ -97,7 +97,7 @@ class TestPut(unittest.TestCase):
             "series": "1"
         }
 
-        r = self.client.put("/art/", json=test_data)
+        r = self.client.put("/art/add", json=test_data)
         self.assertEqual(401, r.status_code)
 
     @patch("flask_app.db.MongoClient")
@@ -130,7 +130,7 @@ class TestPut(unittest.TestCase):
                              "-3noOi9LO0XRHh7ZBY0"
         }
 
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(422, r.status_code)
 
     @patch("flask_app.db.MongoClient")
@@ -154,7 +154,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/art/", data=test_data, headers=test_headers)
+        r = self.client.put("/art/add", data=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
@@ -184,7 +184,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"title": ["Missing data for required field."]}, r.json)
 
@@ -215,8 +215,8 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        self.client.put("/art/", json=test_data, headers=test_headers)
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        self.client.put("/art/add", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Piece with title Test Piece already exists"}, r.json)
 
@@ -247,7 +247,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"key": ["Not a valid integer."], "price": ["Not a valid number."]}, r.json)
 
@@ -278,7 +278,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/art/", json=test_data, headers=test_headers)
+        r = self.client.put("/art/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"key": ["Key must be nonnegative"]}, r.json)
 

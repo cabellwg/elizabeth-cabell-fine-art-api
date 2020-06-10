@@ -12,7 +12,7 @@ import flask_app
 
 
 class TestPut(unittest.TestCase):
-    """Tests uploading an image to the art endpoint"""
+    """Tests uploading an image to the psalms endpoint"""
 
     def setUp(self):
         """Runs before each test method"""
@@ -29,21 +29,15 @@ class TestPut(unittest.TestCase):
             }
         ]
 
-        self.test_psalm_docs = [
+        self.test_art_docs = [
             {
-                "number": 2,
-                "demoPath": "test_demo_path",
-                "demoThumbnailColor": "#1482cd",
-                "thumbnailPath": "test_thumbnail_path",
-                "statement": {
-                    "title": "Psalm Piece 2",
-                    "text": [
-                        {
-                            "key": 0,
-                            "text": "Test paragraph"
-                        }
-                    ]
-                }
+                "key": 0,
+                "title": "Test Piece",
+                "path": "test_piece",
+                "medium": "Acrylic on canvas",
+                "size": "20\" x 20\"",
+                "price": 200000,
+                "collection": "Florals"
             }
         ]
 
@@ -58,11 +52,11 @@ class TestPut(unittest.TestCase):
             shutil.rmtree(base_dir)
 
     @patch("flask_app.db.MongoClient")
-    def test_upload_thumbnail(self, mock_MongoClient):
-        """Tries to upload a thumbnail image"""
+    def test_upload_piece(self, mock_MongoClient):
+        """Tries to upload a piece"""
         mock_MongoClient.return_value = self.mock_db
         mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         login_data = {
             "username": "johndoe",
@@ -73,8 +67,7 @@ class TestPut(unittest.TestCase):
 
         with open("test.jpg", mode="rb") as im:
             test_data = {
-                "number": 2,
-                "imageType": "thumbnail"
+                "title": "Test Piece"
             }
 
             test_headers = {
@@ -82,22 +75,19 @@ class TestPut(unittest.TestCase):
                 "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
+            builder = EnvironBuilder(app=self.client.application, path="/art/upload", data=test_data,
                                      method="POST", headers=test_headers)
             builder.files.add_file("file", im, "test.jpg", "image/jpeg")
 
             r = self.client.open(builder)
             self.assertEqual(201, r.status_code)
 
-            base_dir = self.client.application.config["IMAGE_STORE_DIR"]
-            self.assertTrue(os.path.exists(os.path.join(base_dir, "test_thumbnail_path.jpg")))
-
     @patch("flask_app.db.MongoClient")
-    def test_upload_with_missing_psalm(self, mock_MongoClient):
-        """Tries to upload a thumbnail image"""
+    def test_upload_piece_without_title(self, mock_MongoClient):
+        """Tries to upload a piece without giving a title"""
         mock_MongoClient.return_value = self.mock_db
         mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         login_data = {
             "username": "johndoe",
@@ -107,165 +97,89 @@ class TestPut(unittest.TestCase):
         login_response = self.client.post("/auth/login", json=login_data)
 
         with open("test.jpg", mode="rb") as im:
-            test_data = {
-                "number": 1,
-                "imageType": "thumbnail"
-            }
-
             test_headers = {
                 "Content-Type": "multipart/form-data",
                 "Authorization": "Bearer " + login_response.json.get("accessToken")
             }
 
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
+            builder = EnvironBuilder(app=self.client.application, path="/art/upload",
+                                     method="POST", headers=test_headers)
+            builder.files.add_file("file", im, "test.jpg", "image/jpeg")
+
+            r = self.client.open(builder)
+            self.assertEqual(400, r.status_code)
+            self.assertEqual({"msg": "Please specify a piece"}, r.json)
+
+    @patch("flask_app.db.MongoClient")
+    def test_upload_piece_with_empty_title(self, mock_MongoClient):
+        """Tries to upload a piece with an empty string as the title"""
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
+
+        login_data = {
+            "username": "johndoe",
+            "password": "hunter2"
+        }
+
+        login_response = self.client.post("/auth/login", json=login_data)
+
+        with open("test.jpg", mode="rb") as im:
+            test_headers = {
+                "Content-Type": "multipart/form-data",
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
+            }
+
+            test_data = {
+                "title": ""
+            }
+
+            builder = EnvironBuilder(app=self.client.application, path="/art/upload", data=test_data,
+                                     method="POST", headers=test_headers)
+            builder.files.add_file("file", im, "test.jpg", "image/jpeg")
+
+            r = self.client.open(builder)
+            self.assertEqual(400, r.status_code)
+            self.assertEqual({"msg": "Please specify a piece"}, r.json)
+
+    @patch("flask_app.db.MongoClient")
+    def test_upload_piece_with_invalid_title(self, mock_MongoClient):
+        """Tries to upload a piece with a title that doesn't exist"""
+        mock_MongoClient.return_value = self.mock_db
+        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
+
+        login_data = {
+            "username": "johndoe",
+            "password": "hunter2"
+        }
+
+        login_response = self.client.post("/auth/login", json=login_data)
+
+        with open("test.jpg", mode="rb") as im:
+            test_headers = {
+                "Content-Type": "multipart/form-data",
+                "Authorization": "Bearer " + login_response.json.get("accessToken")
+            }
+
+            test_data = {
+                "title": "N'existe pas"
+            }
+
+            builder = EnvironBuilder(app=self.client.application, path="/art/upload", data=test_data,
                                      method="POST", headers=test_headers)
             builder.files.add_file("file", im, "test.jpg", "image/jpeg")
 
             r = self.client.open(builder)
             self.assertEqual(404, r.status_code)
-            self.assertEqual({"msg": "Psalm 1 not found"}, r.json)
-
-    @patch("flask_app.db.MongoClient")
-    def test_upload_demo(self, mock_MongoClient):
-        """Tries to upload a demo image"""
-        mock_MongoClient.return_value = self.mock_db
-        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
-
-        login_data = {
-            "username": "johndoe",
-            "password": "hunter2"
-        }
-
-        login_response = self.client.post("/auth/login", json=login_data)
-
-        with open("test.jpg", mode="rb") as im:
-            test_data = {
-                "number": 2,
-                "imageType": "demo"
-            }
-
-            test_headers = {
-                "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("accessToken")
-            }
-
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
-                                     method="POST", headers=test_headers)
-            builder.files.add_file("file", im, "test.jpg", "image/jpeg")
-
-            r = self.client.open(builder)
-            self.assertEqual(201, r.status_code)
-
-            base_dir = self.client.application.config["IMAGE_STORE_DIR"]
-            self.assertTrue(os.path.exists(os.path.join(base_dir, "test_demo_path-large.jpg")))
-            self.assertTrue(os.path.exists(os.path.join(base_dir, "test_demo_path-thumbnail.jpg")))
-
-    @patch("flask_app.db.MongoClient")
-    def test_upload_image_with_invalid_number(self, mock_MongoClient):
-        """Tries to upload an image with an invalid Psalm number"""
-        mock_MongoClient.return_value = self.mock_db
-        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
-
-        login_data = {
-            "username": "johndoe",
-            "password": "hunter2"
-        }
-
-        login_response = self.client.post("/auth/login", json=login_data)
-
-        with open("test.jpg", mode="rb") as im:
-            test_data = {
-                "number": -2,
-                "imageType": "demo"
-            }
-
-            test_headers = {
-                "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("accessToken")
-            }
-
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
-                                     method="POST", headers=test_headers)
-            builder.files.add_file("file", im, "test.jpg", "image/jpeg")
-
-            r = self.client.open(builder)
-            self.assertEqual(400, r.status_code)
-            self.assertEqual({"msg": "Please use a valid Psalm number"}, r.json)
-
-    @patch("flask_app.db.MongoClient")
-    def test_upload_image_with_invalid_number_type(self, mock_MongoClient):
-        """Tries to upload an image with an invalid Psalm number type"""
-        mock_MongoClient.return_value = self.mock_db
-        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
-
-        login_data = {
-            "username": "johndoe",
-            "password": "hunter2"
-        }
-
-        login_response = self.client.post("/auth/login", json=login_data)
-
-        with open("test.jpg", mode="rb") as im:
-            test_data = {
-                "number": "NaN",
-                "imageType": "demo"
-            }
-
-            test_headers = {
-                "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("accessToken")
-            }
-
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
-                                     method="POST", headers=test_headers)
-            builder.files.add_file("file", im, "test.jpg", "image/jpeg")
-
-            r = self.client.open(builder)
-            self.assertEqual(400, r.status_code)
-            self.assertEqual({"msg": "Please use a valid Psalm number"}, r.json)
-
-    @patch("flask_app.db.MongoClient")
-    def test_upload_piece_with_invalid_type(self, mock_MongoClient):
-        """Tries to upload an image with an invalid type"""
-        mock_MongoClient.return_value = self.mock_db
-        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
-
-        login_data = {
-            "username": "johndoe",
-            "password": "hunter2"
-        }
-
-        login_response = self.client.post("/auth/login", json=login_data)
-
-        with open("test.jpg", mode="rb") as im:
-            test_data = {
-                "number": 2,
-                "imageType": "WRONG!"
-            }
-
-            test_headers = {
-                "Content-Type": "multipart/form-data",
-                "Authorization": "Bearer " + login_response.json.get("accessToken")
-            }
-
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload", data=test_data,
-                                     method="POST", headers=test_headers)
-            builder.files.add_file("file", im, "test.jpg", "image/jpeg")
-
-            r = self.client.open(builder)
-            self.assertEqual(400, r.status_code)
-            self.assertEqual({"msg": "Please enter a valid image type"}, r.json)
+            self.assertEqual({"msg": "Piece with title \"N'existe pas\" not found"}, r.json)
 
     @patch("flask_app.db.MongoClient")
     def test_upload_with_invalid_content_type(self, mock_MongoClient):
-        """Tries to upload an image with the wrong content type"""
+        """Tries to upload a piece with the wrong content type"""
         mock_MongoClient.return_value = self.mock_db
         mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         login_data = {
             "username": "johndoe",
@@ -274,25 +188,24 @@ class TestPut(unittest.TestCase):
 
         login_response = self.client.post("/auth/login", json=login_data)
 
-        with open("test.jpg", mode="rb") as im:
-            test_headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + login_response.json.get("accessToken")
-            }
+        test_headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + login_response.json.get("accessToken")
+        }
 
-            builder = EnvironBuilder(app=self.client.application, path="/psalms/upload",
-                                     method="POST", headers=test_headers)
+        builder = EnvironBuilder(app=self.client.application, path="/art/upload",
+                                 method="POST", headers=test_headers)
 
-            r = self.client.open(builder)
-            self.assertEqual(400, r.status_code)
-            self.assertEqual({"msg": "Please use multipart/form-data"}, r.json)
+        r = self.client.open(builder)
+        self.assertEqual(400, r.status_code)
+        self.assertEqual({"msg": "Please use multipart/form-data"}, r.json)
 
     @patch("flask_app.db.MongoClient")
     def test_upload_without_file(self, mock_MongoClient):
         """Tries to upload a piece without an image file"""
         mock_MongoClient.return_value = self.mock_db
         mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-        mock_MongoClient().test.psalms.insert_many(self.test_psalm_docs)
+        mock_MongoClient().test.art.insert_many(self.test_art_docs)
 
         login_data = {
             "username": "johndoe",
@@ -302,8 +215,7 @@ class TestPut(unittest.TestCase):
         login_response = self.client.post("/auth/login", json=login_data)
 
         test_data = {
-            "number": 2,
-            "imageType": "demo"
+            "title": "test title"
         }
 
         test_headers = {
@@ -311,6 +223,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.post("/psalms/upload", data=test_data, headers=test_headers)
+        r = self.client.post("/art/upload", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request must include a file to upload"}, r.json)
+

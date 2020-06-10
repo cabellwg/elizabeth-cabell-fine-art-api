@@ -90,7 +90,7 @@ def build_bp(app):
 
         return jsonify({"msg": "Incorrect username or password"}), 400
 
-    @bp.route("/token-verify", methods=["POST"])
+    @bp.route("/verify-token", methods=["POST"])
     @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
                   allow_headers=["Content-Type", "Authorization"],
                   methods=["POST"])

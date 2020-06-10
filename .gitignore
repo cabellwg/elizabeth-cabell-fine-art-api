@@ -6,6 +6,7 @@ static
 templates
 flask_env
 p3_*env
+test-img-store
 
 # local env files
 .env.local
