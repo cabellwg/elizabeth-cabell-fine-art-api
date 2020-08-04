@@ -5,7 +5,6 @@ from time import sleep
 from flask import (
     Blueprint, request, jsonify
 )
-from flask_cors import cross_origin
 from flask_jwt_extended import (
     create_access_token, jwt_required
 )
@@ -23,9 +22,6 @@ def build_bp(app):
     # Begin route definitions
 
     @bp.route("/register", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
     def register():
         if not request.is_json:
             return jsonify({"msg": "Request body must be application/json"}), 400
@@ -57,9 +53,6 @@ def build_bp(app):
         return jsonify({"msg": "User created, you may now log in"}), 200
 
     @bp.route("/login", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
     def login():
         if not request.is_json:
             return jsonify({"msg": "Request body must be application/json"}), 400
@@ -91,9 +84,6 @@ def build_bp(app):
         return jsonify({"msg": "Incorrect username or password"}), 400
 
     @bp.route("/verify-token", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
     @jwt_required
     def verify_token():
         return jsonify({}), 200

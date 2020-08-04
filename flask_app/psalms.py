@@ -4,13 +4,12 @@ from PIL import Image
 from flask import (
     Blueprint, request, jsonify
 )
-from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError, RAISE
 
 from .db import get_db
-from .schemas import PsalmsSchema
 from .image_utils import decorate_image_filename, resize_image
+from .schemas import PsalmsSchema, PsalmsListSchema
 
 
 def build_bp(app):
@@ -20,9 +19,6 @@ def build_bp(app):
     # Begin route definitions
 
     @bp.route("/", methods=["GET"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["GET"])
     def get_psalms():
         db = get_db()
 
@@ -34,10 +30,7 @@ def build_bp(app):
 
         return jsonify(metadata), 200
 
-    @bp.route("/", methods=["PUT"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["PUT"])
+    @bp.route("/add", methods=["PUT"])
     @jwt_required
     def add_psalms():
         if not request.is_json:
@@ -58,9 +51,6 @@ def build_bp(app):
         return jsonify({}), 201
 
     @bp.route("/upload", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
     @jwt_required
     def upload_image_to_metadata_image_store():
         """Uploads a psalm image to the image store. Function is idempotent."""
@@ -110,6 +100,35 @@ def build_bp(app):
             jsonify({"msg": "Please upload a valid image file."}), 400
 
         return jsonify({}), 201
+
+    @bp.route("/update", methods=["POST"])
+    @jwt_required
+    def update_psalm():
+        if not request.is_json:
+            return jsonify({"msg": "Request body must be application/json"}), 400
+
+        try:
+            new_psalms = PsalmsListSchema().load(request.json, unknown=RAISE)
+        except ValidationError as e:
+            return jsonify(e.messages), 400
+
+        psalms = get_db().database.psalms
+
+        for new_psalm in new_psalms["psalms"]:
+            psalms.replace_one({"number": new_psalm["number"]}, new_psalm)
+
+        return jsonify({}), 200
+
+    @bp.route("/delete", methods=["DELETE"])
+    @jwt_required
+    def delete_psalm():
+        if not request.is_json:
+            return jsonify({"msg": "Request body must be application/json"}), 400
+
+        number = request.json.get("number")
+        psalms = get_db().database.psalms
+        psalms.delete_one({"number": number})
+        return jsonify({}), 200
 
     # End route definitions
 

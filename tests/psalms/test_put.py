@@ -56,7 +56,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/psalms/", json=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", json=test_data, headers=test_headers)
         self.assertEqual(201, r.status_code)
 
     def test_put_psalm_without_token(self):
@@ -64,7 +64,7 @@ class TestPut(unittest.TestCase):
 
         test_data = {}
 
-        r = self.client.put("/psalms/", json=test_data)
+        r = self.client.put("/psalms/add", json=test_data)
         self.assertEqual(401, r.status_code)
 
     @patch("flask_app.db.MongoClient")
@@ -89,7 +89,7 @@ class TestPut(unittest.TestCase):
                              "-3noOi9LO0XRHh7ZBY0"
         }
 
-        r = self.client.put("/psalms/", json=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", json=test_data, headers=test_headers)
         self.assertEqual(422, r.status_code)
 
     @patch("flask_app.db.MongoClient")
@@ -111,7 +111,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/psalms/", data=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", data=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
@@ -144,7 +144,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/psalms/", json=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"demoThumbnailColor": ["Missing data for required field."],
                           "statement": {
@@ -186,8 +186,8 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        self.client.put("/psalms/", json=test_data, headers=test_headers)
-        r = self.client.put("/psalms/", json=test_data, headers=test_headers)
+        self.client.put("/psalms/add", json=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Psalm 2 already exists"}, r.json)
 
@@ -222,7 +222,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/psalms/", json=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"demoThumbnailColor": ["Demo thumbnail color is not a valid hex color code"]}, r.json)
 
@@ -257,7 +257,7 @@ class TestPut(unittest.TestCase):
             "Authorization": "Bearer " + login_response.json.get("accessToken")
         }
 
-        r = self.client.put("/psalms/", json=test_data, headers=test_headers)
+        r = self.client.put("/psalms/add", json=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"number": ["Number must be positive"]}, r.json)
 

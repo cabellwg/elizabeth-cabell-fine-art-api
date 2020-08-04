@@ -1,5 +1,5 @@
-import unittest
 import datetime
+import unittest
 from unittest.mock import patch
 
 from mongomock import MongoClient
@@ -62,12 +62,16 @@ class TestUpdate(unittest.TestCase):
         login_response = self.client.post("/auth/login", json=login_data)
 
         test_data = {
-            "key": 0,
-            "title": "Test Piece",
-            "medium": "Acrylic on canvas",
-            "size": "20\" x 20\"",
-            "price": 1000.00,
-            "collection": "Florals"
+            "pieces": [
+                {
+                    "key": 0,
+                    "title": "Test Piece",
+                    "medium": "Acrylic on canvas",
+                    "size": "20\" x 20\"",
+                    "price": 1000.00,
+                    "collection": "Florals"
+                }
+            ]
         }
 
         test_headers = {
@@ -95,13 +99,17 @@ class TestUpdate(unittest.TestCase):
         login_response = self.client.post("/auth/login", json=login_data)
 
         test_data = {
-            "key": 0,
-            "title": "Test Psalm",
-            "medium": "Acrylic on canvas",
-            "size": "test",
-            "price": 1000.00,
-            "collection": "Psalms",
-            "series": "1"
+            "pieces": [
+                {
+                    "key": 0,
+                    "title": "Test Psalm",
+                    "medium": "Acrylic on canvas",
+                    "size": "test",
+                    "price": 1000.00,
+                    "collection": "Psalms",
+                    "series": "1"
+                }
+            ]
         }
 
         test_headers = {
@@ -119,13 +127,17 @@ class TestUpdate(unittest.TestCase):
         """Tries to replace a piece without a bearer token"""
 
         test_data = {
-            "key": 0,
-            "title": "Test Piece",
-            "medium": "Acrylic on canvas",
-            "size": "20\" x 20\"",
-            "price": 2000.00,
-            "collection": "Psalms",
-            "series": "1"
+            "pieces": [
+                {
+                    "key": 0,
+                    "title": "Test Piece",
+                    "medium": "Acrylic on canvas",
+                    "size": "20\" x 20\"",
+                    "price": 2000.00,
+                    "collection": "Psalms",
+                    "series": "1"
+                }
+            ]
         }
 
         r = self.client.post("/art/update", json=test_data)
@@ -145,13 +157,17 @@ class TestUpdate(unittest.TestCase):
         self.client.post("/auth/login", json=login_data)
 
         test_data = {
-            "key": 0,
-            "title": "Test Piece",
-            "medium": "Acrylic on canvas",
-            "size": "20\" x 20\"",
-            "price": 2000.00,
-            "collection": "Psalms",
-            "series": "1"
+            "pieces": [
+                {
+                    "key": 0,
+                    "title": "Test Piece",
+                    "medium": "Acrylic on canvas",
+                    "size": "20\" x 20\"",
+                    "price": 2000.00,
+                    "collection": "Psalms",
+                    "series": "1"
+                }
+            ]
         }
 
         test_headers = {
@@ -188,38 +204,6 @@ class TestUpdate(unittest.TestCase):
         r = self.client.post("/art/update", data=test_data, headers=test_headers)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
-
-    @patch("flask_app.db.MongoClient")
-    def test_nonexistent_piece(self, mock_MongoClient):
-        """Tries to replace a piece that doesn't exist"""
-        mock_MongoClient.return_value = self.mock_db
-        mock_MongoClient().test.apiAuth.insert_many(self.test_user_docs)
-
-        login_data = {
-            "username": "johndoe",
-            "password": "hunter2"
-        }
-
-        login_response = self.client.post("/auth/login", json=login_data)
-
-        test_data = {
-            "key": 0,
-            "title": "Test Piece 2",
-            "medium": "Acrylic on canvas",
-            "size": "20\" x 20\"",
-            "price": 2000.00,
-            "collection": "Psalms",
-            "series": "1"
-        }
-
-        test_headers = {
-            "Authorization": "Bearer " + login_response.json.get("accessToken")
-        }
-
-        self.client.post("/art/update", json=test_data, headers=test_headers)
-        r = self.client.post("/art/update", json=test_data, headers=test_headers)
-        self.assertEqual(400, r.status_code)
-        self.assertEqual({"msg": "Piece with title Test Piece 2 does not exist"}, r.json)
 
 
 if __name__ == "__main__":

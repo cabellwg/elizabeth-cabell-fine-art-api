@@ -1,6 +1,6 @@
 Flask==1.1.2
 uwsgi==2.0.18
-flask_cors==3.0.7
+flask_cors==3.0.8
 flask_jwt_extended==3.24.1
 pymongo[tls]==3.10.1
 dnspython==1.16.0

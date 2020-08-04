@@ -1,8 +1,11 @@
+import logging
 import os
-import sentry_sdk
 
+import sentry_sdk
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from sentry_sdk import capture_exception
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 
@@ -31,12 +34,21 @@ def create_app(test_env=None):
                 integrations=[FlaskIntegration()]
         )
 
-    jwt = JWTManager(app)
+    CORS(app, origins=app.config["ALLOWED_ORIGINS"],
+         allow_headers=["Content-Type", "Authorization"])
+    JWTManager(app)
 
     @app.route("/healthcheck", methods=["GET"])
     def healthcheck():
         """Route for the healthcheck."""
         return b"", 200
+
+    @app.errorhandler(500)
+    def server_error(e):
+        logging.exception("An error occurred during a request. %s", e)
+        if env == "prod":
+            capture_exception(e)
+        return "An internal error occured", 500
 
     from . import db
     db.init_app(app)

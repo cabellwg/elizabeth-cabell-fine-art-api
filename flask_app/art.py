@@ -4,13 +4,12 @@ from PIL import Image
 from flask import (
     Blueprint, request, jsonify
 )
-from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError, RAISE
 
 from .db import get_db
 from .image_utils import decorate_image_filename, resize_image
-from .schemas import PieceSchema
+from .schemas import PiecesSchema, PieceSchema
 
 
 def build_bp(app):
@@ -19,34 +18,14 @@ def build_bp(app):
 
     # Begin route definitions
 
-    @bp.route("/", methods=["GET"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["GET"])
+    @bp.route("/", methods=["POST"])
     def get_pieces():
         if not request.is_json:
             return jsonify({"msg": "Request body must be application/json"}), 400
 
         db = get_db().database
 
-        collection = request.json.get("collection")
-        series = request.json.get("series")
-
-        if collection is None:
-            return jsonify({
-                "msg": "No artwork matching the parameters was found"
-            }), 404
-
-        if series is not None:
-            query_filter = {
-                "collection": collection,
-                "series": series
-            }
-        else:
-            query_filter = {
-                "collection": collection
-            }
-
+        query_filter = request.json
         num_results = db.art.count_documents(query_filter)
 
         if num_results == 0:
@@ -67,9 +46,6 @@ def build_bp(app):
         return jsonify(metadata), 200
 
     @bp.route("/add", methods=["PUT"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["PUT"])
     @jwt_required
     def add_piece():
         if not request.is_json:
@@ -89,31 +65,35 @@ def build_bp(app):
         return jsonify({}), 201
 
     @bp.route("/update", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
     @jwt_required
     def update_piece():
         if not request.is_json:
             return jsonify({"msg": "Request body must be application/json"}), 400
 
         try:
-            new_piece = PieceSchema().load(request.json, unknown=RAISE)
+            new_pieces = PiecesSchema().load(request.json, unknown=RAISE)
         except ValidationError as e:
             return jsonify(e.messages), 400
 
         art = get_db().database.art
 
-        result = art.replace_one({"title": new_piece["title"]}, new_piece)
-        if result.matched_count != 1:
-            return jsonify({"msg": "Piece with title {} does not exist".format(new_piece["title"])}), 400
+        for new_piece in new_pieces["pieces"]:
+            art.replace_one({"title": new_piece["title"]}, new_piece)
 
         return jsonify({}), 200
 
+    @bp.route("/delete", methods=["DELETE"])
+    @jwt_required
+    def delete_piece():
+        if not request.is_json:
+            return jsonify({"msg": "Request body must be application/json"}), 400
+
+        title = request.json.get("title")
+        art = get_db().database.art
+        art.delete_one({"title": title})
+        return jsonify({}), 200
+
     @bp.route("/upload", methods=["POST"])
-    @cross_origin(origins=app.config["ALLOWED_ORIGINS"],
-                  allow_headers=["Content-Type", "Authorization"],
-                  methods=["POST"])
     @jwt_required
     def upload_piece_to_image_store():
         """Uploads an image to the image store. Function is idempotent."""

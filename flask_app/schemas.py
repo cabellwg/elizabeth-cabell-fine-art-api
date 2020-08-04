@@ -33,6 +33,11 @@ class PieceSchema(Schema):
         return in_data
 
 
+class PiecesSchema(Schema):
+    """Schema for a set of pieces of artwork"""
+    pieces = fields.List(fields.Nested(PieceSchema))
+
+
 class PsalmsParagraphSchema(Schema):
     key = fields.Integer(required=True)
     text = fields.String(required=True)
@@ -68,3 +73,7 @@ class PsalmsSchema(Schema):
         in_data["demoPath"] = secure_filename("{}-demo".format(in_data["number"]))
         in_data["thumbnailPath"] = secure_filename("{}-thumbnail".format(in_data["number"]))
         return in_data
+
+class PsalmsListSchema(Schema):
+    """Schema for a set of psalms"""
+    psalms = fields.List(fields.Nested(PsalmsSchema))

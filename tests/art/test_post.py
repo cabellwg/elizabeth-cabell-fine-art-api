@@ -6,8 +6,8 @@ from mongomock import MongoClient
 import flask_app
 
 
-class TestGet(unittest.TestCase):
-    """Tests the GET method of the art endpoint"""
+class TestPost(unittest.TestCase):
+    """Tests the POST method of the art endpoint"""
 
     def setUp(self):
         """Runs before each test method"""
@@ -76,7 +76,7 @@ class TestGet(unittest.TestCase):
             }
         ]
 
-        r = self.client.get("/art/", json=test_data)
+        r = self.client.post("/art/", json=test_data)
         self.assertEqual(expected_response, r.json)
 
     @patch("flask_app.db.MongoClient")
@@ -94,7 +94,7 @@ class TestGet(unittest.TestCase):
             "msg": "No artwork matching the parameters was found"
         }
 
-        r = self.client.get("/art/", json=test_data)
+        r = self.client.post("/art/", json=test_data)
         self.assertEqual(404, r.status_code)
         self.assertEqual(expected_response, r.json)
 
@@ -119,7 +119,7 @@ class TestGet(unittest.TestCase):
             }
         ]
 
-        r = self.client.get("/art/", json=test_data)
+        r = self.client.post("/art/", json=test_data)
         self.assertEqual(200, r.status_code)
         self.assertEqual(expected_response, r.json)
 
@@ -137,7 +137,7 @@ class TestGet(unittest.TestCase):
             "msg": "No artwork matching the parameters was found"
         }
 
-        r = self.client.get("/art/", json=test_data)
+        r = self.client.post("/art/", json=test_data)
         self.assertEqual(404, r.status_code)
         self.assertEqual(expected_response, r.json)
 
@@ -148,7 +148,7 @@ class TestGet(unittest.TestCase):
             "collection": "There's no collection with this name"
         }
 
-        r = self.client.get("/art/", data=test_data)
+        r = self.client.post("/art/", data=test_data)
         self.assertEqual(400, r.status_code)
         self.assertEqual({"msg": "Request body must be application/json"}, r.json)
 
