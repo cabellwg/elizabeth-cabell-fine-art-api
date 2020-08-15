@@ -46,7 +46,9 @@ class ProdConfig(Config):
     DEBUG = False
     TESTING = False
     ALLOWED_ORIGINS = ["https://elizabethcabellfineart.com",
-                       "https://www.elizabethcabellfineart.com"]
+                       "https://www.elizabethcabellfineart.com",
+                       "https://ecfaprerelease.williamcabell.me"
+                       ]
     MONGO_URI = "mongodb+srv://ecfa-api:{}@elizabeth-cabell-fine-art-05jp7.mongodb.net/prod?retryWrites=true&w=maj" \
                 "ority".format(read_secret(os.environ.get("DB_PASS_SECRET")))
     DB_NAME = "prod"

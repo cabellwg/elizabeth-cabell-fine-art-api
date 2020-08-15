@@ -14,7 +14,9 @@ RUN apk update && apk add --no-cache \
         musl-dev \
         gcc \
         pcre \
-        pcre-dev
+        pcre-dev \
+        jpeg-dev \
+        zlib-dev
 
 COPY requirements.prod.txt Makefile /app/
 WORKDIR /app
