@@ -13,6 +13,7 @@ class PieceSchema(Schema):
     medium = fields.String(required=True)
     size = fields.String(required=True)
     price = fields.Float(required=True)
+    thumbnailColor = fields.Str(required=True)
     collection = fields.String(required=True)
     series = fields.String(default="None")
 
@@ -20,6 +21,11 @@ class PieceSchema(Schema):
     def validate_key(self, value):
         if value < 0:
             raise ValidationError("Key must be nonnegative")
+
+    @validates("thumbnailColor")
+    def validate_thumbnail_color(self, value):
+        if not re.match(HEX_COLOR_PATTERN, value):
+            raise ValidationError("Thumbnail color is not a valid hex color code")
 
     @validates_schema
     def check_series(self, data, **kwargs):
@@ -73,6 +79,7 @@ class PsalmsSchema(Schema):
         in_data["demoPath"] = secure_filename("{}-demo".format(in_data["number"]))
         in_data["thumbnailPath"] = secure_filename("{}-thumbnail".format(in_data["number"]))
         return in_data
+
 
 class PsalmsListSchema(Schema):
     """Schema for a set of psalms"""

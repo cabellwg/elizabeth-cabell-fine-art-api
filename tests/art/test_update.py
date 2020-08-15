@@ -33,6 +33,7 @@ class TestUpdate(unittest.TestCase):
                 "medium": "Acrylic on canvas",
                 "size": "20\" x 20\"",
                 "price": 200000,
+                "thumbnailColor": "#333333",
                 "collection": "Florals"
             },
             {
@@ -42,6 +43,7 @@ class TestUpdate(unittest.TestCase):
                 "medium": "Acrylic on canvas",
                 "size": "20\" x 20\"",
                 "price": 200000,
+                "thumbnailColor": "#333333",
                 "collection": "Psalms",
                 "series": "1"
             }
@@ -69,6 +71,7 @@ class TestUpdate(unittest.TestCase):
                     "medium": "Acrylic on canvas",
                     "size": "20\" x 20\"",
                     "price": 1000.00,
+                    "thumbnailColor": "#333333",
                     "collection": "Florals"
                 }
             ]
@@ -106,6 +109,7 @@ class TestUpdate(unittest.TestCase):
                     "medium": "Acrylic on canvas",
                     "size": "test",
                     "price": 1000.00,
+                    "thumbnailColor": "#333333",
                     "collection": "Psalms",
                     "series": "1"
                 }
@@ -134,6 +138,7 @@ class TestUpdate(unittest.TestCase):
                     "medium": "Acrylic on canvas",
                     "size": "20\" x 20\"",
                     "price": 2000.00,
+                    "thumbnailColor": "#333333",
                     "collection": "Psalms",
                     "series": "1"
                 }
@@ -164,6 +169,7 @@ class TestUpdate(unittest.TestCase):
                     "medium": "Acrylic on canvas",
                     "size": "20\" x 20\"",
                     "price": 2000.00,
+                    "thumbnailColor": "#333333",
                     "collection": "Psalms",
                     "series": "1"
                 }

@@ -44,6 +44,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": 2000,
+            "thumbnailColor": "#333333",
             "collection": "Florals"
         }
 
@@ -72,6 +73,7 @@ class TestPut(unittest.TestCase):
             "title": "Test Piece",
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
+            "thumbnailColor": "#333333",
             "price": 2000,
             "collection": "Psalms",
             "series": "1"
@@ -93,6 +95,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": 2000,
+            "thumbnailColor": "#333333",
             "collection": "Psalms",
             "series": "1"
         }
@@ -119,6 +122,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": 2000,
+            "thumbnailColor": "#333333",
             "collection": "Psalms",
             "series": "1"
         }
@@ -176,6 +180,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": 2000,
+            "thumbnailColor": "#333333",
             "collection": "Psalms",
             "series": "1"
         }
@@ -207,6 +212,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": 2000,
+            "thumbnailColor": "#333333",
             "collection": "Psalms",
             "series": "1"
         }
@@ -239,6 +245,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": "$2,000.00",
+            "thumbnailColor": "#333333",
             "collection": "Psalms",
             "series": "1"
         }
@@ -270,6 +277,7 @@ class TestPut(unittest.TestCase):
             "medium": "Acrylic on canvas",
             "size": "20\" x 20\"",
             "price": 200000,
+            "thumbnailColor": "#333333",
             "collection": "Psalms",
             "series": "1"
         }
