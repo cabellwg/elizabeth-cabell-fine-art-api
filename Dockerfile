@@ -27,7 +27,9 @@ RUN make init env=prod
 # Deployment image
 FROM base as deploy
 
-RUN apk update && apk add --no-cache pcre
+RUN mkdir /images && chmod 777 /images
+
+RUN apk update && apk add --no-cache pcre jpeg-dev zlib-dev
 
 RUN addgroup -S flask && adduser -S flask -G flask
 USER flask
@@ -35,8 +37,6 @@ USER flask
 COPY --from=build /app /app
 COPY . /app
 WORKDIR /app
-
-ENV ENV=prod
 
 HEALTHCHECK --timeout=5s --start-period=10s \
   CMD ["/app/p3_8env/bin/python", "/app/healthcheck.py"]

@@ -37,7 +37,7 @@ class Config:
     DB_NAME = "test"
     BCRYPT_HANDLE_LONG_PASSWORDS = True
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    IMAGE_STORE_DIR = "./test-img-store"
+    IMAGE_STORE_DIR = os.environ.get("IMAGE_STORE_DIR") or "./test-img-store"
     SENTRY_DSN = "https://d1abe2a1db2848f8bab4bf37735d3b05@o395084.ingest.sentry.io/5259410"
 
 

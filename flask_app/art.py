@@ -131,7 +131,8 @@ def build_bp(app):
                 full_img.save(decorate_image_filename(base_name, "full"))
                 large_img.save(decorate_image_filename(base_name, "large"))
                 thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
-        except IOError:
+        except IOError as e:
+            print(e)
             return jsonify({"msg": "Please upload a valid image file."}), 400
 
         return jsonify({}), 201
