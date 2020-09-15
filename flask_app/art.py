@@ -1,4 +1,5 @@
 import os
+import logging
 
 from PIL import Image
 from flask import (
@@ -6,6 +7,7 @@ from flask import (
 )
 from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError, RAISE
+from sentry_sdk import capture_exception
 
 from .db import get_db
 from .image_utils import decorate_image_filename, resize_image
@@ -124,15 +126,20 @@ def build_bp(app):
 
                 base_name = os.path.join(base_dir, piece["path"])
 
-                full_img = im
-                large_img = resize_image(im, 1000)
-                thumbnail_img = resize_image(im, 64)
+                try:
+                    full_img = im
+                    large_img = resize_image(im, 1000)
+                    thumbnail_img = resize_image(im, 64)
 
-                full_img.save(decorate_image_filename(base_name, "full"))
-                large_img.save(decorate_image_filename(base_name, "large"))
-                thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
-        except IOError as e:
-            print(e)
+                    full_img.save(decorate_image_filename(base_name, "full"))
+                    large_img.save(decorate_image_filename(base_name, "large"))
+                    thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
+                except IOError as e:
+                    logging.exception("Error processing or saving image: %s", e)
+                    if app.config["ENV"] == "prod":
+                        capture_exception(e)
+                    return jsonify({"msg": "Error saving image"}), 500
+        except IOError:
             return jsonify({"msg": "Please upload a valid image file."}), 400
 
         return jsonify({}), 201

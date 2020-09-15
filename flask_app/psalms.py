@@ -1,4 +1,5 @@
 import os
+import logging
 
 from PIL import Image
 from flask import (
@@ -6,6 +7,7 @@ from flask import (
 )
 from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError, RAISE
+from sentry_sdk import capture_exception
 
 from .db import get_db
 from .image_utils import decorate_image_filename, resize_image
@@ -86,13 +88,25 @@ def build_bp(app):
 
                 if image_type == "thumbnail":
                     base_name = os.path.join(base_dir, psalm["thumbnailPath"] + ".jpg")
-                    im.save(base_name)
+                    try:
+                        im.save(base_name)
+                    except IOError as e:
+                        logging.exception("Error saving thumbnail image: %s", e)
+                        if app.config["ENV"] == "prod":
+                            capture_exception(e)
+                        return jsonify({"msg": "Error saving thumbnail image"}), 500
                 elif image_type == "demo":
                     base_name = os.path.join(base_dir, psalm["demoPath"])
-                    large_img = resize_image(im, 800)
-                    thumbnail_img = resize_image(im, 64)
-                    large_img.save(decorate_image_filename(base_name, "large"))
-                    thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
+                    try:
+                        large_img = resize_image(im, 800)
+                        thumbnail_img = resize_image(im, 64)
+                        large_img.save(decorate_image_filename(base_name, "large"))
+                        thumbnail_img.save(decorate_image_filename(base_name, "thumbnail"))
+                    except IOError as e:
+                        logging.exception("Error processing or saving demo image: %s", e)
+                        if app.config["ENV"] == "prod":
+                            capture_exception(e)
+                        return jsonify({"msg": "Error saving demo image"}), 500
                 else:
                     return jsonify({"msg": "Please enter a valid image type"}), 400
 

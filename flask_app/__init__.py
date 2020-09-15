@@ -17,6 +17,7 @@ def create_app(test_env=None):
     app = Flask(__name__)
 
     env = test_env if test_env is not None else os.environ["ENV"]
+    app.config["ENV"] = env
 
     if env == "prod":
         app.config.from_object("config.ProdConfig")
@@ -45,10 +46,10 @@ def create_app(test_env=None):
 
     @app.errorhandler(500)
     def server_error(e):
-        logging.exception("An error occurred during a request. %s", e)
+        logging.exception("An error occurred during a request: %s", e)
         if env == "prod":
             capture_exception(e)
-        return "An internal error occured", 500
+        return "An internal error occurred", 500
 
     from . import db
     db.init_app(app)
