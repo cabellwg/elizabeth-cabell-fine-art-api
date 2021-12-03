@@ -1,5 +1,6 @@
 p3_*env
 .idea
+.travis.yml
 .gitignore
 .git
 .coverage

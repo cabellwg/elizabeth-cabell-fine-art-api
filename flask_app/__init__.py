@@ -16,7 +16,7 @@ def create_app(test_env=None):
     """
     app = Flask(__name__)
 
-    env = test_env if test_env is not None else os.environ[b"STAGE"]
+    env = test_env if test_env is not None else os.environ["ENV"]
     app.config["ENV"] = env
 
     if env == "prod":

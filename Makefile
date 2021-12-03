@@ -6,14 +6,14 @@ init:
 
 test:
 	. ./p3_8env/bin/activate; \
-	export STAGE="test"; \
+	export ENV=test; \
 	coverage run --source flask_app -m unittest discover -vcs tests
 
 dev:
 	. ./p3_8env/bin/activate; \
 	export FLASK_APP=flask_app; \
 	export FLASK_ENV=development; \
-	export STAGE=dev; \
+	export ENV=dev; \
 	flask run
 
 .PHONY: init test dev
