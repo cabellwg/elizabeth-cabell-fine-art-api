@@ -7,7 +7,7 @@ from flask import (
 )
 from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError, RAISE
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, capture_message
 
 from .db import get_db
 from .image_utils import decorate_image_filename, resize_image
@@ -44,6 +44,10 @@ def build_bp(app):
             piece.pop("series", None)
             piece["price"] = round(float(piece["price"]) / 100, ndigits=2)
             metadata.append(piece)
+
+            if piece["title"] == "Quare Fremuerunt Gentes" \
+                    and piece["series"] == "1":
+                capture_message("The Psalms got messed up")
 
         return jsonify(metadata), 200
 
